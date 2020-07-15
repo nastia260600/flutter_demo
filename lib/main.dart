@@ -110,6 +110,7 @@ class ProjectsPage extends StatefulWidget {
 
 class _ProjectsPageState extends State<ProjectsPage> {
   List<Project> list = List();
+  bool flag = false;
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
 
@@ -149,35 +150,67 @@ class _ProjectsPageState extends State<ProjectsPage> {
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _fetchData,
-        child: ListView.builder(
-          itemCount: list.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                FlatButton(
+                  onPressed: () => {
+                    setState(() {
+                      list.sort((a,b) => flag
+                          ? a.login
+                              .toString()
+                              .toLowerCase()
+                              .compareTo(b.login.toString().toLowerCase())
+                          : b.login
+                              .toString()
+                              .toLowerCase()
+                              .compareTo(a.login.toString().toLowerCase()));
+                      flag = !flag;
+                    }),
+                  },
+                  child: Text(
+                    'Sort'
+                  ),
+                )
+              ],
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: list.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
 
-              child: Container(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  children: <Widget>[
-                    Image.network(
-                      list[index].avatar_url,
-                      fit: BoxFit.fitHeight,
-                      width: 600.0,
-                      height: 240.0,
+                    child: Container(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        children: <Widget>[
+                          Image.network(
+                            list[index].avatar_url,
+                            fit: BoxFit.fitHeight,
+                            width: 600.0,
+                            height: 240.0,
+                          ),
+                          Text(
+                            list[index].login,
+                            style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            list[index].id.toString(),
+                            style: TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
                     ),
-                    Text(
-                      list[index].login,
-                      style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      list[index].id.toString(),
-                      style: TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
+            )
+
+          ],
+        )
       ),
 
     );
