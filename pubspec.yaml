@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  filter_list: ^0.0.1
   http: any
   flutter:
     sdk: flutter
